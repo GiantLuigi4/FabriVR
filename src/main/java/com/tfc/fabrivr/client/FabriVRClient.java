@@ -160,14 +160,14 @@ public class FabriVRClient implements ClientModInitializer {
 		hmdDesc = OVRHmdDesc.malloc();
 		OVR.ovr_GetHmdDesc(session.get(0), hmdDesc);
 		
-		OVRMirrorTextureDesc textureDesc = OVRMirrorTextureDesc.malloc();
-//		memset(&desc, 0, sizeof(desc));
-		textureDesc.Width(bufferSize.w());
-		textureDesc.Height(bufferSize.h());
-		textureDesc.Format(OVR.OVR_FORMAT_R8G8B8A8_UNORM_SRGB);
-		
-		// Create mirror texture and an FBO used to copy mirror texture to back buffer
-		OVRGL.novr_CreateMirrorTextureGL(session.get(0),desc.address(),298329123);
+//		OVRMirrorTextureDesc textureDesc = OVRMirrorTextureDesc.malloc();
+////		memset(&desc, 0, sizeof(desc));
+//		textureDesc.Width(bufferSize.w());
+//		textureDesc.Height(bufferSize.h());
+//		textureDesc.Format(OVR.OVR_FORMAT_R8G8B8A8_UNORM_SRGB);
+//
+//		// Create mirror texture and an FBO used to copy mirror texture to back buffer
+//		OVRGL.novr_CreateMirrorTextureGL(session.get(0),desc.address(),298329123);
 		
 		OVR.ovr_GetRenderDesc(session.get(0), OVR.ovrEye_Left, hmdDesc.DefaultEyeFov(0), eyeRenderDesc0);
 		OVR.ovr_GetRenderDesc(session.get(0), OVR.ovrEye_Right, hmdDesc.DefaultEyeFov(1), eyeRenderDesc1);
