@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "fabri_vr",
+  "version": "${version}",
+  "name": "FabriVR",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/fabriVR/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.tfc.fabrivr.client.FabriVRClient"
+    ],
+    "main": [
+      "com.tfc.fabrivr.FabriVR"
+    ]
+  },
+  "mixins": [
+    "fabriVR.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.10.8",
+    "fabric": "*",
+    "minecraft": "1.16.4"
+  }
+}
