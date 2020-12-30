@@ -1,10 +1,8 @@
 package com.tfc.fabrivr.mixin_code;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.tfc.fabrivr.FabriVR;
 import com.tfc.fabrivr.client.FabriVRClient;
+import com.tfc.fabrivr.client.FabriVROculus;
 import com.tfc.fabrivr.mixin.PlayerRendererAccessor;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -25,13 +23,13 @@ public class WorldRendererCode {
 			if (MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getRotation() != null) {
 				Quaternion qt = MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getRotation().copy();
 				matrices.multiply(qt);
-				if (FabriVRClient.headQuat != null) {
+				if (FabriVROculus.headQuat != null) {
 					matrices.multiply(
 							new Quaternion(
-									FabriVRClient.headQuat.x(),
-									-FabriVRClient.headQuat.y(),
-									FabriVRClient.headQuat.z(),
-									FabriVRClient.headQuat.w()
+									FabriVROculus.headQuat.x(),
+									-FabriVROculus.headQuat.y(),
+									-FabriVROculus.headQuat.z(),
+									FabriVROculus.headQuat.w()
 							)
 					);
 				}
@@ -55,23 +53,30 @@ public class WorldRendererCode {
 				MinecraftClient.getInstance().player.getZ()
 		);
 		matrices.push();
-		if (FabriVRClient.hand2Pos != null) {
+		if (FabriVROculus.hand2Pos != null) {
 			matrices.translate(
-					-FabriVRClient.hand2Pos.x()*2,
-					(FabriVRClient.hand2Pos.y()+0.5f)*2,
-					-FabriVRClient.hand2Pos.z()*2
+//					-((FabriVROculus.hand2Pos.x()*2)),
+//					-((FabriVROculus.hand2Pos.x()*2) - FabriVROculus.headPos.x()),
+					-((FabriVROculus.hand2Pos.x() - FabriVROculus.headPos.x()) * 2),
+//					(((FabriVROculus.hand2Pos.y()*2))+0.5f),
+//					(((FabriVROculus.hand2Pos.y()*2) - FabriVROculus.headPos.y())+0.5f),
+					(((FabriVROculus.hand2Pos.y()) * 2) + 0.5f),
+//					-((FabriVROculus.hand2Pos.z()*2))
+//					-((FabriVROculus.hand2Pos.z()*2) - FabriVROculus.headPos.z())
+					-((FabriVROculus.hand2Pos.z() - FabriVROculus.headPos.z()) * 2)
 			);
 			Quaternion qt = new Quaternion(
-					-FabriVRClient.hand2Quat.x(),
-					FabriVRClient.hand2Quat.y(),
-					-FabriVRClient.hand2Quat.z(),
-					FabriVRClient.hand2Quat.w()
+					-FabriVROculus.hand2Quat.x(),
+					FabriVROculus.hand2Quat.y(),
+					-FabriVROculus.hand2Quat.z(),
+					FabriVROculus.hand2Quat.w()
 			);
 			matrices.multiply(qt);
-			qt = new Quaternion(0,180,0,true);
+			qt = new Quaternion(0, 180, 0, true);
 			matrices.multiply(qt);
-			qt = new Quaternion(-90,0,0,true);
-			matrices.translate(0.5f-0.5f/16,0.5f/16,0);
+			qt = new Quaternion(-45, -90, 0, true);
+//			matrices.translate(-0.5f+0.5f/16,-0.5f/16,0);
+			matrices.translate(0, 0.25f + (2 / 16f), 0);
 			matrices.multiply(qt);
 			((PlayerRendererAccessor) renderer).doRenderArm(
 					matrices, MinecraftClient.getInstance().getBufferBuilders().getEffectVertexConsumers(),
@@ -80,38 +85,51 @@ public class WorldRendererCode {
 					renderer.getModel().rightArm,
 					renderer.getModel().rightSleeve
 			);
-			
-//			matrices.translate(0.25f,1,0.25f);
-			matrices.translate(-0.325f,0.5,0.1f);
-			qt.scale(-1);
-			matrices.multiply(qt);
-			qt = new Quaternion(180+45,180,0,true);
-			matrices.multiply(qt);
-			matrices.translate(-0.5f,0.5f,1f);
-			MinecraftClient.getInstance().getHeldItemRenderer().renderItem(
-					tickDelta,matrices,MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(),
-					MinecraftClient.getInstance().player,LightmapTextureManager.pack(15, 15)
-			);
+////			matrices.translate(0.25f,1,0.25f);
+//			matrices.translate(-0.325f,0.5,0.1f);
+//			qt.scale(-1);
+//			matrices.multiply(qt);
+//			qt = new Quaternion(180+45,180,0,true);
+//			matrices.multiply(qt);
+//			matrices.translate(-0.5f,0.5f,1f);
+//			if (!MinecraftClient.getInstance().player.getItemsHand().iterator().next().isEmpty()) {
+//				MinecraftClient.getInstance().getHeldItemRenderer().renderItem(
+//						MinecraftClient.getInstance().player,
+//						MinecraftClient.getInstance().player.getItemsHand().iterator().next(),
+//						ModelTransformation.Mode.FIRST_PERSON_LEFT_HAND,
+//						MinecraftClient.getInstance().player.getMainArm().equals(Hand.MAIN_HAND),
+//						matrices,
+//						MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(),
+//						LightmapTextureManager.pack(15,15)
+//				);
+//			}
 		}
 		matrices.pop();
 		matrices.push();
-		if (FabriVRClient.hand1Pos != null) {
+		if (FabriVROculus.hand1Pos != null) {
 			matrices.translate(
-					-FabriVRClient.hand1Pos.x(),
-					FabriVRClient.hand1Pos.y()+ 1,
-					-FabriVRClient.hand1Pos.z()
+//					-((FabriVROculus.hand1Pos.x()*2)),
+//					-((FabriVROculus.hand1Pos.x()*2) - FabriVROculus.headPos.x()),
+					-((FabriVROculus.hand1Pos.x() - FabriVROculus.headPos.x())) * 2,
+//					(((FabriVROculus.hand1Pos.y()*2))+0.5f),
+//					(((FabriVROculus.hand1Pos.y()*2) - FabriVROculus.headPos.y())+0.5f),
+					(((FabriVROculus.hand1Pos.y()) * 2) + 0.5f),
+//					-((FabriVROculus.hand1Pos.z()*2))
+//					-((FabriVROculus.hand1Pos.z()*2) - FabriVROculus.headPos.z())
+					-((FabriVROculus.hand1Pos.z() - FabriVROculus.headPos.z()) * 2)
 			);
 			Quaternion qt = new Quaternion(
-					-FabriVRClient.hand1Quat.x(),
-					FabriVRClient.hand1Quat.y(),
-					-FabriVRClient.hand1Quat.z(),
-					FabriVRClient.hand1Quat.w()
+					-FabriVROculus.hand1Quat.x(),
+					FabriVROculus.hand1Quat.y(),
+					-FabriVROculus.hand1Quat.z(),
+					FabriVROculus.hand1Quat.w()
 			);
 			matrices.multiply(qt);
-			qt = new Quaternion(0,180,0,true);
+			qt = new Quaternion(0, 180, 0, true);
 			matrices.multiply(qt);
-			qt = new Quaternion(-90,0,0,true);
-			matrices.translate(-0.5f+0.5f/16,-0.5f/16,0);
+			qt = new Quaternion(-45, 90, 0, true);
+//			matrices.translate(-0.5f+0.5f/16,-0.5f/16,0);
+			matrices.translate(0, 0.25f + (2 / 16f), 0);
 			matrices.multiply(qt);
 			((PlayerRendererAccessor) renderer).doRenderArm(
 					matrices, MinecraftClient.getInstance().getBufferBuilders().getEffectVertexConsumers(),

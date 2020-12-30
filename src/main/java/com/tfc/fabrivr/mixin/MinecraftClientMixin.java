@@ -1,32 +1,23 @@
 package com.tfc.fabrivr.mixin;
 
-import com.tfc.fabrivr.FabriVR;
 import com.tfc.fabrivr.client.FabriVRClient;
-import com.tfc.fabrivr.client.FabriVRFrameBuffer;
+import com.tfc.fabrivr.client.FabriVROculus;
+import com.tfc.fabrivr.client.FabriVROpenVR;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
-import net.minecraft.client.gl.Framebuffer;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.PointerBuffer;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import org.lwjgl.ovr.OVR;
-import org.lwjgl.ovr.OVRGL;
-import org.lwjgl.ovr.OVRTextureSwapChainDesc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.nio.IntBuffer;
-
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
 	@Inject(at = @At("HEAD"),method = "close()V")
 	public void close(CallbackInfo ci) {
-		OVR.ovr_DestroyTextureSwapChain(FabriVRClient.session.get(0), FabriVRClient.textureSwapChain.get(0));
-		OVR.ovr_Destroy(FabriVRClient.session.get(0));
-		OVR.ovr_Shutdown();
+		if (FabriVRClient.useOVR) FabriVROculus.destroy();
+		else FabriVROpenVR.destroy();
 	}
 	
 	@Inject(at = @At("TAIL"), method = "<init>")

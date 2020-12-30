@@ -1,6 +1,7 @@
 package com.tfc.fabrivr.mixin_code;
 
 import com.tfc.fabrivr.client.FabriVRClient;
+import com.tfc.fabrivr.client.FabriVROculus;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,7 +30,7 @@ public class PlayerEntityMixinCode {
 					float xOff = -player.getWidth() / 2f;
 					if (x != 0) xOff = -xOff;
 					for (int y = 1; y >= 0; y--) {
-						float yOff = MathHelper.lerp(y/1f,0,player.getHeight());
+						float yOff = MathHelper.lerp(y / 1f, 0, player.getHeight());
 						for (int z = 0; z <= 2; z++) {
 							float zOff = -player.getWidth() / 2f;
 							if (z != 0) zOff = -zOff;
@@ -44,10 +45,10 @@ public class PlayerEntityMixinCode {
 								for (Box box : shape.getBoundingBoxes()) {
 									box = box.offset(pos1);
 									if (player.getBoundingBox().intersects(box)) {
-										if ((box.maxY-box.minY) - (player.getPos().y-player.getBlockPos().getY()) <= player.stepHeight && y == 0) {
+										if ((box.maxY - box.minY) - (player.getPos().y - player.getBlockPos().getY()) <= player.stepHeight && y == 0) {
 											player.setBoundingBox(player.getBoundingBox().offset(
 													0,
-													box.maxY-box.minY - (player.getPos().y-player.getBlockPos().getY()),
+													box.maxY - box.minY - (player.getPos().y - player.getBlockPos().getY()),
 													0
 											));
 										} else {
@@ -67,11 +68,15 @@ public class PlayerEntityMixinCode {
 						}
 					}
 				}
-				FabriVRClient.offX = FabriVRClient.trueOffX - FabriVRClient.headPos.x() * 2;
-				FabriVRClient.offZ = FabriVRClient.trueOffZ - FabriVRClient.headPos.z() * 2;
-				FabriVRClient.offY = FabriVRClient.headPos.y();
-				FabriVRClient.trueOffX = FabriVRClient.headPos.x() * 2;
-				FabriVRClient.trueOffZ = FabriVRClient.headPos.z() * 2;
+				
+				if (FabriVROculus.headPos != null) {
+					FabriVRClient.offX = FabriVRClient.trueOffX - FabriVROculus.headPos.x() * 2;
+					FabriVRClient.offZ = FabriVRClient.trueOffZ - FabriVROculus.headPos.z() * 2;
+//					FabriVRClient.offY = (FabriVROculus.headPos.y()+0.25f) * 2;
+					FabriVRClient.offY = (FabriVROculus.headPos.y());
+					FabriVRClient.trueOffX = FabriVROculus.headPos.x() * 2;
+					FabriVRClient.trueOffZ = FabriVROculus.headPos.z() * 2;
+				}
 			}
 		}
 	}
