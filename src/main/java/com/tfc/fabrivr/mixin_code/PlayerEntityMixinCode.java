@@ -15,15 +15,15 @@ public class PlayerEntityMixinCode {
 	public static void move(@NotNull PlayerEntity player) {
 		if (player.equals(MinecraftClient.getInstance().player)) {
 			BlockPos pos = new BlockPos(
-					player.getX() + FabriVRClient.offX,
+					player.getX() - FabriVRClient.offX,
 					player.getY(),
-					player.getZ() + FabriVRClient.offZ
+					player.getZ() - FabriVRClient.offZ
 			);
 			if (!player.world.getBlockState(pos).isFullCube(player.world, pos)) {
 				player.setBoundingBox(player.getBoundingBox().offset(
-						FabriVRClient.offX,
+						-FabriVRClient.offX,
 						0,
-						FabriVRClient.offZ
+						-FabriVRClient.offZ
 				));
 				player.moveToBoundingBoxCenter();
 				for (int x = 0; x <= 1; x++) {

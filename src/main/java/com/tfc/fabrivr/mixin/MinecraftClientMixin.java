@@ -17,7 +17,7 @@ public class MinecraftClientMixin {
 	@Inject(at = @At("HEAD"),method = "close()V")
 	public void close(CallbackInfo ci) {
 		if (FabriVRClient.useOVR) FabriVROculus.destroy();
-		else FabriVROpenVR.destroy();
+		FabriVROpenVR.destroy();
 	}
 	
 	@Inject(at = @At("TAIL"), method = "<init>")

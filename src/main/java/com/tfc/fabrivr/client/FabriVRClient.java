@@ -37,7 +37,6 @@ public class FabriVRClient implements ClientModInitializer {
 	
 	public static void initVR() {
 		if (useOVR) FabriVROculus.initVR();
-		else FabriVROpenVR.initVR();
 	}
 	
 	public static void update() {
@@ -62,8 +61,6 @@ public class FabriVRClient implements ClientModInitializer {
 					useOVR = true;
 			}
 		}
-		if (useOVR)
-			OpenVR.destroy();
 		
 		trackedDevicePose = TrackedDevicePose.create(VR.k_unMaxTrackedDeviceCount);
 		hmdTrackedDevicePoses = new TrackedDevicePose[VR.k_unMaxTrackedDeviceCount];

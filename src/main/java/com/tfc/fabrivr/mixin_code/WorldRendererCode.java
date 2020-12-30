@@ -24,18 +24,18 @@ public class WorldRendererCode {
 				Quaternion qt = MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getRotation().copy();
 				matrices.multiply(qt);
 				if (FabriVROculus.headQuat != null) {
-					matrices.multiply(
-							new Quaternion(
-									FabriVROculus.headQuat.x(),
-									-FabriVROculus.headQuat.y(),
-									-FabriVROculus.headQuat.z(),
-									FabriVROculus.headQuat.w()
-							)
+					qt = new Quaternion(
+							FabriVROculus.headQuat.x(),
+							FabriVROculus.headQuat.y(),
+							-FabriVROculus.headQuat.z(),
+							FabriVROculus.headQuat.w()
 					);
+					qt.normalize();
+					matrices.multiply(qt);
 				}
 			}
 		}
-		matrices.translate(-0, -offY, -0);
+		matrices.translate(-0, -(offY), -0);
 	}
 	
 	public static void renderWorldLast(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, net.minecraft.client.render.GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci, World world) {
@@ -71,6 +71,7 @@ public class WorldRendererCode {
 					-FabriVROculus.hand2Quat.z(),
 					FabriVROculus.hand2Quat.w()
 			);
+			qt.normalize();
 			matrices.multiply(qt);
 			qt = new Quaternion(0, 180, 0, true);
 			matrices.multiply(qt);
@@ -124,6 +125,7 @@ public class WorldRendererCode {
 					-FabriVROculus.hand1Quat.z(),
 					FabriVROculus.hand1Quat.w()
 			);
+			qt.normalize();
 			matrices.multiply(qt);
 			qt = new Quaternion(0, 180, 0, true);
 			matrices.multiply(qt);
