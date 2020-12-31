@@ -1,13 +1,15 @@
 package com.tfc.fabrivr.mixin_code;
 
+import com.tfc.fabrivr.AngleHelper;
+import com.tfc.fabrivr.FabriVR;
 import com.tfc.fabrivr.client.FabriVRClient;
 import com.tfc.fabrivr.client.FabriVROculus;
+import com.tfc.fabrivr.mixin.EntityAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +23,9 @@ public class PlayerEntityMixinCode {
 			);
 			if (!player.world.getBlockState(pos).isFullCube(player.world, pos)) {
 				player.setBoundingBox(player.getBoundingBox().offset(
-						-FabriVRClient.offX,
+						FabriVRClient.offX,
 						0,
-						-FabriVRClient.offZ
+						FabriVRClient.offZ
 				));
 				player.moveToBoundingBoxCenter();
 				for (int x = 0; x <= 1; x++) {
@@ -72,12 +74,46 @@ public class PlayerEntityMixinCode {
 				if (FabriVROculus.headPos != null) {
 					FabriVRClient.offX = FabriVRClient.trueOffX - FabriVROculus.headPos.x() * 2;
 					FabriVRClient.offZ = FabriVRClient.trueOffZ - FabriVROculus.headPos.z() * 2;
-//					FabriVRClient.offY = (FabriVROculus.headPos.y()+0.25f) * 2;
 					FabriVRClient.offY = (FabriVROculus.headPos.y());
 					FabriVRClient.trueOffX = FabriVROculus.headPos.x() * 2;
 					FabriVRClient.trueOffZ = FabriVROculus.headPos.z() * 2;
 				}
 			}
 		}
+	}
+	
+	public static Vec3d getCamOff(PlayerEntity entity) {
+		if (entity.equals(MinecraftClient.getInstance().player) && FabriVROculus.hand2Pos != null) {
+			float offX = (FabriVROculus.hand2Pos.x() * 2);
+			float offY = (FabriVROculus.hand2Pos.y() * 2 - 0.5f);
+			float offZ = (FabriVROculus.hand2Pos.z() * 2);
+			if (offX <= 0) offX -= 0.5f;
+			if (offY <= 0) offY -= 0.5f;
+			if (offZ <= 0) offZ -= 0.5f;
+			return new Vec3d(
+					FabriVRClient.offX - offX,
+					FabriVRClient.offY - offY,
+					FabriVRClient.offZ - offZ
+			);
+		}
+		return new Vec3d(
+				entity.getDataTracker().get(FabriVR.OFF_X),
+				entity.getDataTracker().get(FabriVR.OFF_Y),
+				entity.getDataTracker().get(FabriVR.OFF_Z)
+		);
+	}
+	
+	public static Vec3d getRotation(float tickDelta, Entity entity) {
+		if (MinecraftClient.getInstance().player == entity && FabriVROculus.hand2Pos != null) {
+			return AngleHelper.toMotionVector(
+					new Quaternion(
+							-FabriVROculus.hand2Quat.x(),
+							FabriVROculus.hand2Quat.y(),
+							-FabriVROculus.hand2Quat.z(),
+							FabriVROculus.hand2Quat.w()
+					)
+			).multiply(-1, -1, 1);
+		}
+		return ((EntityAccessor) entity)._getRotationVector(entity.getPitch(tickDelta), entity.getYaw(tickDelta));
 	}
 }

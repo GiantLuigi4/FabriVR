@@ -10,14 +10,18 @@
     "WindowProviderMixin"
   ],
   "client": [
-    "GameRendererMixin",
+    "FrameBufferAccessor",
+    "FrameBufferMixin",
     "GameRendererAccessor",
+    "GameRendererMixin",
+    "GUIMixin",
+    "GUIVRFieldsAccessor",
+    "MatrixStackAccessor",
+    "MinecraftClientMixin",
     "PlayerMixin",
     "PlayerRendererAccessor",
     "PlayerRendererMixin",
-    "MinecraftClientMixin",
-    "FrameBufferMixin",
-    "FrameBufferAccessor",
+    "UniversalGUIMixin",
     "WorldRendererMixin"
   ],
   "injectors": {

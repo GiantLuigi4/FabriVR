@@ -49,6 +49,7 @@ public class FabriVROculus {
 				} else {
 					hand2Pos = pose.Position();
 					hand2Quat = pose.Orientation();
+					hand2Quat.set(hand2Quat.x(), hand2Quat.y(), hand2Quat.z(), hand2Quat.w());
 				}
 			} catch (Throwable ignored) {
 			}

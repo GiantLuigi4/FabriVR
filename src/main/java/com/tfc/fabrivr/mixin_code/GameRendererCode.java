@@ -1,6 +1,8 @@
 package com.tfc.fabrivr.mixin_code;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.tfc.fabrivr.client.FabriVRClient;
+import net.minecraft.client.MinecraftClient;
 
 public class GameRendererCode {
 	public static int eye = -1;
@@ -85,6 +87,8 @@ public class GameRendererCode {
 //		else RenderSystem.viewport(0, 0, FabriVRClient.vrFBO.getSize().w(), FabriVRClient.vrFBO.getSize().h());
 	}
 	
+	public static boolean renderGUI = false;
+	
 	public static void renderPost() {
 //		FabriVRFrameBuffer framebuffer = FabriVRClient.vrFBO;
 ////		framebuffer.initFbo(framebuffer.viewportWidth,framebuffer.viewportHeight,false);
@@ -102,5 +106,97 @@ public class GameRendererCode {
 //		}
 //		GlStateManager.clear(i, false);
 //		framebuffer.endWrite();
+
+//		stack.translate(0,0,-10);
+//		stack.scale(1,1,0);
+		
+		if (MinecraftClient.getInstance().currentScreen != null) {
+			try {
+				RenderSystem.assertThread(RenderSystem::isOnRenderThread);
+//
+				if (MinecraftClient.getInstance().world != null) {
+					RenderSystem.popMatrix();
+				}
+//
+//				renderGUI = true;
+//				MatrixStack stack = new MatrixStack();
+//
+//				Quaternion qt = new Quaternion(
+////						FabriVROculus.headQuat.x(),
+////						FabriVROculus.headQuat.y(),
+////						FabriVROculus.headQuat.z(),
+////						FabriVROculus.headQuat.w()
+////				);
+//				qt.normalize();
+//
+//				Vec3d angle = AngleHelper.toEulers(qt);
+//
+//				RenderSystem.pushMatrix();
+//				RenderSystem.scalef(1, 1,0);
+//				RenderSystem.translated(
+//						MinecraftClient.getInstance().currentScreen.width / 2f,
+//						MinecraftClient.getInstance().currentScreen.height / 2f,
+//						0
+//				);
+//				RenderSystem.rotatef((float) Math.toDegrees(angle.x), 1, 0, 0);
+//				RenderSystem.rotatef((float) -Math.toDegrees(angle.y), 0, 1, 0);
+//				RenderSystem.rotatef((float) Math.toDegrees(angle.z), 0, 0, 1);
+//				RenderSystem.translated(
+//						MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getPos().x*10,
+//						MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getPos().y*10,
+//						0
+//				);
+//				RenderSystem.scaled(
+//						1f/MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getPos().distanceTo(new Vec3d(0,0,0)),
+//						1f/MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getPos().distanceTo(new Vec3d(0,0,0)),
+//						0
+//				);
+//				RenderSystem.translated(
+//						-MinecraftClient.getInstance().currentScreen.width / 2f,
+//						-MinecraftClient.getInstance().currentScreen.height / 2f,
+//						MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getPos().z*1f/MinecraftClient.getInstance().getEntityRenderDispatcher().camera.getPos().distanceTo(new Vec3d(0,0,0))
+//				);
+//				stack.scale(1,1,0);
+//
+//				RenderSystem.disableCull();
+//
+//				RenderSystem.enableScissor(
+//						0,
+//						0,
+//						(MinecraftClient.getInstance().currentScreen.width*2),
+//						MinecraftClient.getInstance().currentScreen.height*2
+//				);
+//
+//				int i = (int) (MinecraftClient.getInstance().mouse.getX() * (double) MinecraftClient.getInstance().getWindow().getScaledWidth() / (double) MinecraftClient.getInstance().getWindow().getWidth());
+//				int j = (int) (MinecraftClient.getInstance().mouse.getY() * (double) MinecraftClient.getInstance().getWindow().getScaledHeight() / (double) MinecraftClient.getInstance().getWindow().getHeight());
+//				MinecraftClient.getInstance().currentScreen.render(stack, i, j, 0);
+//
+//				RenderSystem.popMatrix();
+//
+////				RenderSystem.translatef(
+////						MinecraftClient.getInstance().currentScreen.width / 2f,
+////						MinecraftClient.getInstance().currentScreen.height / 2f,
+////						0
+////				);
+////				RenderSystem.rotatef(180,0,1,0);
+////				RenderSystem.scalef(1, 1,0);
+////				RenderSystem.rotatef((float) -Math.toDegrees(angle.x), 1, 0, 0);
+////				RenderSystem.rotatef((float) -Math.toDegrees(angle.y), 0, 1, 0);
+////				RenderSystem.rotatef((float) -Math.toDegrees(angle.z), 0, 0, 1);
+////				RenderSystem.translatef(
+////						-MinecraftClient.getInstance().currentScreen.width / 2f,
+////						-MinecraftClient.getInstance().currentScreen.height / 2f,
+////						0
+////				);
+////				RenderSystem.scalef(1,1, 0);
+////
+////				MinecraftClient.getInstance().currentScreen.render(stack, i, j, 0);
+//
+//				RenderSystem.disableScissor();
+//
+//				renderGUI = false;
+			} catch (Throwable ignored) {
+			}
+		}
 	}
 }
