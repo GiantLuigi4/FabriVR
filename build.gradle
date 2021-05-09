@@ -1,8 +1,6 @@
 plugins {
-    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id 'fabric-loom' version '0.7-SNAPSHOT'
     id 'maven-publish'
-    id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -16,21 +14,8 @@ project.ext.lwjglVersion = "3.2.2"
 project.ext.lwjglNatives = "natives-windows"
 
 repositories {
-    jcenter()
-    maven {
-        name = 'Fabric'
-        url = 'https://maven.fabricmc.net/'
-    }
-    gradlePluginPortal()
-    mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url "https://dl.bintray.com/kotlin/kotlin-dev" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
-
-//minecraft {
-//    accessWidener file("src/main/resources/fabri_vr.accesswidener")
-//}
 
 dependencies {
     //to change the versions see the gradle.properties file
@@ -41,24 +26,17 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
+    // https://mvnrepository.com/artifact/org.joml/joml
+    implementation group: 'org.joml', name: 'joml', version: '1.10.1'
+
+    implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion:$lwjglNatives"
+
+//    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion"
+//    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion:$lwjglNatives"
+
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
-//    implementation "org.lwjgl:lwjgl:$lwjglVersion"
-    implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion"
-    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion"
-//    implementation "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
-    implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion:$lwjglNatives"
-    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion:$lwjglNatives"
-
-//    implementation 'com.github.java-graphics:openvr:756fe5315b'
-//    compile 'com.github.kotlin-graphics:openvr:41552f527ccf414bd44e54c16cd8b04cddf5c48d'
-//    compile 'com.github.kotlin-graphics:uno-sdk:9b180ad3940abdc2e706b115d48a270202c11a3a'
-
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-reflect
-//    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.4.30-M1'
 }
 
 processResources {

@@ -4,28 +4,17 @@
   "package": "com.tfc.fabrivr.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "EntityAccessor",
-    "EntityMixin",
-    "PlayerEntityMixin",
-    "WindowProviderMixin"
   ],
   "client": [
-    "FrameBufferAccessor",
-    "FrameBufferMixin",
-    "GameRendererAccessor",
+    "FramebufferAccessor",
+    "FramebufferMixin",
+    "WorldRendererMixin",
     "GameRendererMixin",
-    "GUIMixin",
-    "GUIVRFieldsAccessor",
-    "MatrixStackAccessor",
-    "MinecraftClientMixin",
-    "PlayerMixin",
+    "Matrix4fAccessor",
     "PlayerRendererAccessor",
-    "PlayerRendererMixin",
-    "UniversalGUIMixin",
-    "WorldRendererMixin"
+    "MinecraftClientMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
-  },
-  "priority": 1
+	"defaultRequire": 1
+  }
 }
