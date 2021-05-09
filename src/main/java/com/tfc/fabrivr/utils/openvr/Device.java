@@ -1,10 +1,12 @@
 package com.tfc.fabrivr.utils.openvr;
 
-import org.joml.Matrix4f;
+import com.tfc.fabrivr.utils.translation.OVROrOpenVR2JomlAndOpenVR;
+import com.tfc.fabrivr.utils.translation.ToRawJava;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.lwjgl.openvr.*;
+import org.lwjgl.ovr.*;
 
+//TODO: ovr only mode
 public class Device {
 	public final int index;
 	
@@ -29,19 +31,15 @@ public class Device {
 	}
 	
 	public HmdVector3 getPosition() {
-		//TODO:
+		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
+			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
+			return OVROrOpenVR2JomlAndOpenVR.fromOVRVector(pose.Position());
+			//TODO: butcher the ovr vector to match the openvr vector
+		}
 		VRControllerState state = VRControllerState.malloc();
 		TrackedDevicePose pose = TrackedDevicePose.malloc();
 		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
-		HmdMatrix34 matrix34 = pose.mDeviceToAbsoluteTracking();
-		float x = matrix34.m((0 * 4) + 3);
-		float y = matrix34.m((1 * 4) + 3);
-		float z = matrix34.m((2 * 4) + 3);
-		HmdVector3 vector3 = HmdVector3.malloc();
-		vector3.v(0, x);
-		vector3.v(1, y);
-		vector3.v(2, z);
-		return vector3;
+		return OVROrOpenVR2JomlAndOpenVR.getTranslation(pose.mDeviceToAbsoluteTracking());
 	}
 	
 	public boolean isPresent() {
@@ -49,19 +47,30 @@ public class Device {
 	}
 	
 	public Quaternionf getRotation() {
+		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
+			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
+			return OVROrOpenVR2JomlAndOpenVR.fromOVRQuatf(pose.Orientation());
+			//TODO: butcher the ovr quaternion to match the openvr quaternion
+		}
 		VRControllerState state = VRControllerState.malloc();
 		TrackedDevicePose pose = TrackedDevicePose.malloc();
 		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
 		if (pose.eTrackingResult() != VR.ETrackingResult_TrackingResult_Running_OK) return new Quaternionf();
-		HmdMatrix34 matrix34 = pose.mDeviceToAbsoluteTracking();
-		Matrix4f matrix4fJoml = new Matrix4f();
-		int indx = 0;
-		matrix4fJoml.set(
-				matrix34.m(indx++), matrix34.m(indx++), matrix34.m(indx++), matrix34.m(indx++),
-				matrix34.m(indx++), matrix34.m(indx++), matrix34.m(indx++), matrix34.m(indx++),
-				matrix34.m(indx++), matrix34.m(indx++), matrix34.m(indx++), matrix34.m(indx++),
-				0, 0, 0, 0
-		);
-		return matrix4fJoml.getNormalizedRotation(new Quaternionf());
+		//https://www.codeproject.com/Articles/1171122/How-to-Get-Raw-Positional-Data-from-HTC-Vive
+		Quaternionf q = new Quaternionf();
+		
+		float[][] matrix = ToRawJava.matrixTo2dFloatArray(pose.mDeviceToAbsoluteTracking());
+		
+		//fmax->max
+		//for src, max->fmax
+		q.w = (float) (Math.sqrt(Math.max(0, 1 + matrix[0][0] + matrix[1][1] + matrix[2][2])) / 2);
+		q.x = (float) (Math.sqrt(Math.max(0, 1 + matrix[0][0] - matrix[1][1] - matrix[2][2])) / 2);
+		q.y = (float) (Math.sqrt(Math.max(0, 1 - matrix[0][0] + matrix[1][1] - matrix[2][2])) / 2);
+		q.z = (float) (Math.sqrt(Math.max(0, 1 - matrix[0][0] - matrix[1][1] + matrix[2][2])) / 2);
+		q.x = Math.copySign(q.x, matrix[2][1] - matrix[1][2]);
+		q.y = Math.copySign(q.y, matrix[0][2] - matrix[2][0]);
+		q.z = Math.copySign(q.z, matrix[1][0] - matrix[0][1]);
+		
+		return q.normalize();
 	}
 }

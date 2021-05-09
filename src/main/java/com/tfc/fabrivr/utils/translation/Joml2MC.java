@@ -1,6 +1,5 @@
 package com.tfc.fabrivr.utils.translation;
 
-import net.minecraft.client.util.math.Vector3d;
 import net.minecraft.util.math.Quaternion;
 import org.joml.Quaternionf;
 

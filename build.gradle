@@ -32,8 +32,8 @@ dependencies {
     implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion"
     implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion:$lwjglNatives"
 
-//    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion"
-//    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion:$lwjglNatives"
+    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion:$lwjglNatives"
 
     // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
     // You may need to force-disable transitiveness on them.

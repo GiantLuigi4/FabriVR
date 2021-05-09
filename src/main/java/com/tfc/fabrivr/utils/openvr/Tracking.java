@@ -2,6 +2,7 @@ package com.tfc.fabrivr.utils.openvr;
 
 import org.joml.Vector3d;
 import org.lwjgl.openvr.*;
+import org.lwjgl.ovr.OVR;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,15 @@ public class Tracking {
 	protected static ArrayList<Device> devices = new ArrayList<>();
 	
 	public static void update() {
+		if (Session.session != null) {
+			OVR.ovr_GetTrackingState(
+					Session.session.get(0),
+					OVR.ovr_GetTimeInSeconds(),
+					true,
+					Session.trackingState
+			);
+		}
+		
 		for (DeviceRole value : DeviceRole.values()) {
 			if (value.equals(DeviceRole.RIGHT_HAND)) {
 				Device device = Device.getDeviceForRole(value);
@@ -22,15 +32,17 @@ public class Tracking {
 				if (!device.isPresent()) continue;
 				fillTrackedPart(device, rightHand);
 			}
+			
 			if (value.equals(DeviceRole.INVALID)) {
 				Device device = new Device(0);
 				if (!device.isPresent()) continue;
 				fillTrackedPart(device, head);
 			}
+			
 			if (value.equals(DeviceRole.LEFT_HAND)) {
 				Device device = Device.getDeviceForRole(value);
 				if (device.index == 0) continue;
-//				if (!device.isPresent()) continue;
+				if (!device.isPresent()) continue;
 				fillTrackedPart(device, leftHand);
 			}
 		}
