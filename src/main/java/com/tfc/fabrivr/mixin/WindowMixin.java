@@ -21,6 +21,8 @@ public class WindowMixin {
 	@Inject(at = @At("TAIL"), method = "updateFramebufferSize")
 	public void FabriVR_postUpdateFBOSize(CallbackInfo ci) {
 		GLFW.glfwSetWindowSize(handle, 854, 854);
+		this.framebufferWidth = 854;
+		this.framebufferHeight = 854;
 	}
 	
 	/**
