@@ -40,10 +40,10 @@ public class Device {
 	}
 	
 	public HmdVector3 getPosition() {
-//		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
-//			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
-//			return OVROrOpenVR2JomlAndOpenVR.fromOVRVector(pose.Position());
-//		}
+		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
+			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
+			return OVROrOpenVR2JomlAndOpenVR.fromOVRVector(pose.Position());
+		}
 //		VRControllerState state = VRControllerState.malloc();
 //		TrackedDevicePose pose = TrackedDevicePose.malloc();
 //		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
