@@ -25,6 +25,8 @@ public class Tracking {
 			);
 		}
 		
+		Device.update();
+		
 		for (DeviceRole value : DeviceRole.values()) {
 			if (value.equals(DeviceRole.RIGHT_HAND)) {
 				Device device = Device.getDeviceForRole(value);

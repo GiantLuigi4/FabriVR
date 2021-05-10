@@ -10,6 +10,8 @@ import org.lwjgl.ovr.*;
 public class Device {
 	public final int index;
 	
+	private static TrackedDevicePose[] poses = new TrackedDevicePose[VR.k_unMaxTrackedDeviceCount];
+	
 	public Device(int index) {
 		this.index = index;
 	}
@@ -30,15 +32,22 @@ public class Device {
 		return DeviceRole.valueOf(VRSystem.VRSystem_GetControllerRoleForTrackedDeviceIndex(index));
 	}
 	
-	public HmdVector3 getPosition() {
-		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
-			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
-			return OVROrOpenVR2JomlAndOpenVR.fromOVRVector(pose.Position());
-			//TODO: butcher the ovr vector to match the openvr vector
+	protected static void update() {
+		TrackedDevicePose.Buffer buffer = VRCompositor.getRenderPoses();
+		for (int i = 0 ; i < VR.k_unMaxTrackedDeviceCount; i++) {
+			poses[i] = buffer.get(i);
 		}
-		VRControllerState state = VRControllerState.malloc();
-		TrackedDevicePose pose = TrackedDevicePose.malloc();
-		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
+	}
+	
+	public HmdVector3 getPosition() {
+//		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
+//			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
+//			return OVROrOpenVR2JomlAndOpenVR.fromOVRVector(pose.Position());
+//		}
+//		VRControllerState state = VRControllerState.malloc();
+//		TrackedDevicePose pose = TrackedDevicePose.malloc();
+//		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
+		TrackedDevicePose pose = poses[index];
 		return OVROrOpenVR2JomlAndOpenVR.getTranslation(pose.mDeviceToAbsoluteTracking());
 	}
 	
@@ -50,11 +59,11 @@ public class Device {
 		if (Session.session != null && VRSystem.VRSystem_GetStringTrackedDeviceProperty(index, VR.ETrackedDeviceProperty_Prop_ManufacturerName_String, null).toLowerCase().equals("oculus")) {
 			OVRPosef pose = (isLeftHand() || isRightHand()) ? Session.trackingState.HandPoses(isLeftHand()?0:1).ThePose() : Session.trackingState.HeadPose().ThePose();
 			return OVROrOpenVR2JomlAndOpenVR.fromOVRQuatf(pose.Orientation());
-			//TODO: butcher the ovr quaternion to match the openvr quaternion
 		}
-		VRControllerState state = VRControllerState.malloc();
-		TrackedDevicePose pose = TrackedDevicePose.malloc();
-		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
+//		VRControllerState state = VRControllerState.malloc();
+//		TrackedDevicePose pose = TrackedDevicePose.malloc();
+//		VRSystem.VRSystem_GetControllerStateWithPose(VR.ETrackingUniverseOrigin_TrackingUniverseStanding, index, state, pose);
+		TrackedDevicePose pose = poses[index];
 		if (pose.eTrackingResult() != VR.ETrackingResult_TrackingResult_Running_OK) return new Quaternionf();
 		//https://www.codeproject.com/Articles/1171122/How-to-Get-Raw-Positional-Data-from-HTC-Vive
 		Quaternionf q = new Quaternionf();

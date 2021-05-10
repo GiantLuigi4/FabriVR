@@ -4,9 +4,11 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.openvr.OpenVR;
 import org.lwjgl.openvr.VR;
+import org.lwjgl.openvr.VRCompositor;
 import org.lwjgl.openvr.VRSystem;
 import org.lwjgl.ovr.OVR;
 import org.lwjgl.ovr.OVRGraphicsLuid;
+import org.lwjgl.ovr.OVRInitParams;
 import org.lwjgl.ovr.OVRTrackingState;
 import org.lwjgl.system.MemoryStack;
 
@@ -41,7 +43,7 @@ public class Session {
 			MemoryStack stack = MemoryStack.stackPush();
 			IntBuffer peError = stack.mallocInt(1);
 			
-			int token = VR.VR_InitInternal(peError, 0);
+			int token = VR.VR_InitInternal(peError, VR.EVRApplicationType_VRApplication_Scene);
 			
 			OpenVR.create(token);
 			
@@ -74,18 +76,22 @@ public class Session {
 			}
 			
 //			if (hasOculus) {
-//				OVR.ovr_Initialize(null);
-//				session = BufferUtils.createPointerBuffer(1);
-//				luid = OVRGraphicsLuid.create();
+//				int result = OVR.ovr_Initialize(null);
+//				if (result == 0) {
+//					session = BufferUtils.createPointerBuffer(1);
+//					luid = OVRGraphicsLuid.create();
 //
-//				if (OVR.ovr_Create(session, luid) != 0) {
-//					System.err.println("Couldn't create OVR!");
-//					System.exit(-1);
+//					if (OVR.ovr_Create(session, luid) != 0) {
+//						System.err.println("Couldn't create OVR!");
+//						System.exit(-1);
+//					}
+//
+//					trackingState = OVRTrackingState.malloc();
+//
+//					m++;
+//				} else {
+//					OVR.ovr_Shutdown();
 //				}
-//
-//				trackingState = OVRTrackingState.malloc();
-//
-//				m++;
 //			}
 		}
 		
@@ -94,6 +100,10 @@ public class Session {
 	
 	public static void end() {
 		OpenVR.destroy();
+		if (session != null) {
+			OVR.ovr_Destroy(session.get(0));
+			OVR.ovr_Shutdown();
+		}
 	}
 	
 	public static String getMode() {

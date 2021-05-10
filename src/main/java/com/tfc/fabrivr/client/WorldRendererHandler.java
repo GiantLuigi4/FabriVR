@@ -2,6 +2,7 @@ package com.tfc.fabrivr.client;
 
 import com.tfc.fabrivr.mixin.PlayerRendererAccessor;
 import com.tfc.fabrivr.utils.openvr.Tracking;
+import com.tfc.fabrivr.utils.openvr.VRCompositor;
 import com.tfc.fabrivr.utils.translation.Angle;
 import com.tfc.fabrivr.utils.translation.Joml2MC;
 import net.minecraft.block.Blocks;
@@ -19,7 +20,6 @@ import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.LightType;
 import org.joml.Quaternionf;
 
 public class WorldRendererHandler {
@@ -34,9 +34,16 @@ public class WorldRendererHandler {
 		matrices.translate(0, vector3d.y, 0);
 		float height = MinecraftClient.getInstance().cameraEntity.getHeight();
 		height /= 1.7;
-		Quaternionf quaternionf = Tracking.head.rotation;
-		Quaternion quaternion = new Quaternion(quaternionf.x, -quaternionf.y, -quaternionf.z, quaternionf.w);
-		quaternion.normalize();
+//		matrices.translate(Tracking.head.position.x * height, -Tracking.head.position.y * height, Tracking.head.position.z * height);
+		matrices.translate(0, 0 ,0.1f);
+		matrices.translate(0, -Tracking.head.position.y * height, 0);
+//		{
+//			Quaternionf quaternionf = Tracking.head.rotation;
+//			Quaternion quaternion = new Quaternion(quaternionf.x, -quaternionf.y, quaternionf.z, quaternionf.w);
+//			quaternion.normalize();
+//			matrices.multiply(quaternion);
+//		}
+		matrices.translate(Tracking.head.position.x * height, 0, Tracking.head.position.z * height);
 //		Vec3d angle = Angle.toEulers(quaternion); // TODO: make this only happen on oculus
 //		matrices.multiply(
 //				new Quaternion(
@@ -46,8 +53,6 @@ public class WorldRendererHandler {
 //						false
 //				)
 //		);
-		matrices.translate(Tracking.head.position.x * height, -Tracking.head.position.y * height, Tracking.head.position.z * height);
-		matrices.multiply(quaternion);
 	}
 	
 	// TODO: create a slim variation of the arms and use "AbstractClientPlayerEntity.getModelName" to choose which model to render
@@ -91,6 +96,7 @@ public class WorldRendererHandler {
 					matrices.multiply(new Quaternion(90, 180, 0, true));
 				}
 				matrices.translate(0, -0.125, 0);
+				matrices.scale(0.5f, 0.5f, 0.5f);
 				leftArm.render(
 						matrices, MinecraftClient.getInstance().getBufferBuilders().getEffectVertexConsumers().getBuffer(RenderLayer.getEntitySolid(MinecraftClient.getInstance().player.getSkinTexture())),
 						LightmapTextureManager.pack(0,15), OverlayTexture.DEFAULT_UV
@@ -111,6 +117,7 @@ public class WorldRendererHandler {
 					matrices.multiply(new Quaternion(90, 180, 0, true));
 				}
 				matrices.translate(0, -0.125, 0);
+				matrices.scale(0.5f, 0.5f, 0.5f);
 				rightArm.render(
 						matrices, MinecraftClient.getInstance().getBufferBuilders().getEffectVertexConsumers().getBuffer(RenderLayer.getEntitySolid(MinecraftClient.getInstance().player.getSkinTexture())),
 						LightmapTextureManager.pack(0,15), OverlayTexture.DEFAULT_UV
