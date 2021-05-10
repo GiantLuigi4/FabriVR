@@ -13,6 +13,8 @@
     "Matrix4fAccessor",
     "PlayerRendererAccessor",
     "WindowMixin",
+    "ScreenMixin",
+    "AbstractTextureAccessor",
     "MinecraftClientMixin"
   ],
   "injectors": {
