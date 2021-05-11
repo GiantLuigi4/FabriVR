@@ -1,20 +1,15 @@
 package com.tfc.fabrivr.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tfc.fabrivr.client.FabriVRClient;
 import com.tfc.fabrivr.client.GameRendererHandler;
-import com.tfc.fabrivr.utils.openvr.Tracking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
-import org.joml.Quaternionf;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
